@@ -23,6 +23,15 @@ def _find_origin(arr, i, j):
 
 
 def find_origin(arr):
+    if arr[0] < arr[-1]:    # BUG-1: need to handle already sorted inputs
+        return 0
+    if arr[0] == arr[-1]:   # BUG-2: need to handle case where list repetition occurs in first/last element
+        for i,n in enumerate(arr):
+            print i,n
+            if n != arr[0]:
+                return i
+        return None
+        
     return _find_origin(arr, 0,len(arr))
 
 class Test(unittest.TestCase):

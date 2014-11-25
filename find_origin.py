@@ -23,11 +23,13 @@ def _find_origin(arr, i, j):
 
 
 def find_origin(arr):
-    if arr[0] < arr[-1]:    # BUG-1: need to handle already sorted inputs
+    # BUG-1: need to handle already sorted inputs
+    if arr[0] < arr[-1]:    
         return 0
-    if arr[0] == arr[-1]:   # BUG-2: need to handle case where list repetition occurs in first/last element
+    
+    # BUG-2: need to handle case where list repetition occurs in first/last element
+    if arr[0] == arr[-1] and len(arr) > 1:   
         for i,n in enumerate(arr):
-            print i,n
             if n != arr[0]:
                 return i
         return None
@@ -55,6 +57,10 @@ class Test(unittest.TestCase):
     def testAlreadySortedCase(self):
         arr = range(25)
         self.assertEqual(0, find_origin(arr))
+
+    def testAllSameCase(self):
+        arr = [2,2,2,2,2,2]
+        self.assertEqual(None, find_origin(arr))
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testDegenerateCase']

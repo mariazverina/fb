@@ -6,8 +6,9 @@ Created on 25 Nov 2014
 import unittest
 
 def _find_origin(arr, i, j):
-    if len(arr) < 2:
-        return 0
+    # BUG-3 - short array edge case
+    if j-i < 2:
+        return j
 
     mid = (i + j) / 2   # don't need to do "C style" i + (j - i) / 2 as Python has no integer overflow    
     if arr[mid] > arr[0] and arr[mid+1] < arr[-1]:
@@ -31,10 +32,10 @@ def find_origin(arr):
     if arr[0] == arr[-1] and len(arr) > 1:   
         for i,n in enumerate(arr):
             if n != arr[0]:
-                return i
+                return i + find_origin(arr[i:])
         return None
         
-    return _find_origin(arr, 0,len(arr))
+    return _find_origin(arr, 0, len(arr)-1)
 
 class Test(unittest.TestCase):
 
@@ -46,6 +47,14 @@ class Test(unittest.TestCase):
         arr = [22]
         self.assertEqual(0, find_origin(arr))
     
+    def testTwoElementCase(self):
+        arr = [2,1]
+        self.assertEqual(1, find_origin(arr))
+
+    def testTwoElementSortedCase(self):
+        arr = [1,2]
+        self.assertEqual(0, find_origin(arr))
+
     def testRepetitionsCase(self):
         arr = [22,25,29,32,32,32,32,39,44,59,1,6,12]
         self.assertEqual(10, find_origin(arr))
@@ -53,6 +62,10 @@ class Test(unittest.TestCase):
     def testDegenerateCase(self):
         arr = [2,2,2,2,2,1,2]
         self.assertEqual(5, find_origin(arr))
+
+    def testDegenerateCaseIncreasing(self):
+        arr = [2,2,2,2,2,3,1,2]
+        self.assertEqual(6, find_origin(arr))
 
     def testAlreadySortedCase(self):
         arr = range(25)
